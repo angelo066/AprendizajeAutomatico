@@ -1,3 +1,11 @@
+from random import uniform
+import numpy as np
+import scipy
+from scipy import integrate
+
+def integraVectores(fun, a, b):
+    x = 0
+
 def intengra_mc(fun, a, b, num_puntos = 10000):
     integral = 0
     Ndebajo = 0 
@@ -17,8 +25,11 @@ def intengra_mc(fun, a, b, num_puntos = 10000):
     # M = max; 
     
     #puntos generados aleatoriamente 
-    x = 0 
-    y = 0
+    for i in range (0,num_puntos):
+        x = uniform(a,b)
+        y = uniform(0, M)
+
+        if(cuadrado(x) > y) : Ndebajo += 1 
      
     integral = (Ndebajo / num_puntos) * (b - a) * M
     
@@ -29,7 +40,9 @@ def cuadrado(x):
     return x * x
 
 def main() :
-    print(cuadrado(2), "\n")
+    print("Nuestra solucion:" ,intengra_mc(cuadrado, 1, 5), "\n")
+    print("Solucion real:", scipy.integrate.quad(cuadrado, 1, 5))
+
 
 
 main()
