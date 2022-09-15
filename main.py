@@ -1,10 +1,23 @@
+from array import array
 from random import uniform
 import numpy as np
 import scipy
 from scipy import integrate
 
-def integraVectores(fun, a, b):
-    x = 0
+def integraVectores(fun, a, b, num_puntos = 10000):
+    M = b ** 2
+
+    vectorX = np.random.uniform(a,b,[1,num_puntos])
+
+    vectorY = np.random.uniform(0,M,[1,num_puntos])
+
+    comparatoria = np.array(fun(vectorX))
+
+    Ndebajo = np.sum(vectorY < comparatoria)
+
+    return (Ndebajo / num_puntos) * (b - a) * M
+
+
 
 def intengra_mc(fun, a, b, num_puntos = 10000):
     integral = 0
@@ -29,7 +42,7 @@ def intengra_mc(fun, a, b, num_puntos = 10000):
         x = uniform(a,b)
         y = uniform(0, M)
 
-        if(cuadrado(x) > y) : Ndebajo += 1 
+        if(fun(x) > y) : Ndebajo += 1 
      
     integral = (Ndebajo / num_puntos) * (b - a) * M
     
@@ -41,7 +54,9 @@ def cuadrado(x):
 
 def main() :
     print("Nuestra solucion:" ,intengra_mc(cuadrado, 1, 5), "\n")
-    print("Solucion real:", scipy.integrate.quad(cuadrado, 1, 5))
+    print("Solucion de vectores", integraVectores(cuadrado,1,5), "\n")
+    print("Solucion real:", scipy.integrate.quad(cuadrado, 1, 5), "\n")
+
 
 
 
