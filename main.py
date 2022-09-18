@@ -27,7 +27,7 @@ def calcMaxHeight(func, a, b, num_samples = 300):
         acc += interval
     return maxHeight
 
-def intengra_mc(fun, a, b, num_puntos = 10000):
+def intengra_mc(fun, a, b, num_puntos = 20000):
     tic = time.process_time()
     integral = 0
     Ndebajo = 0 
@@ -41,19 +41,16 @@ def intengra_mc(fun, a, b, num_puntos = 10000):
      
     integral = (Ndebajo / num_puntos) * (b - a) * M
     
-    # return integral
     toc = time.process_time()
     return 1000* (toc - tic) , integral
 
-def integraVectores(fun, a, b, num_puntos = 10000):
+def integraVectores(fun, a, b, num_puntos = 20000):
     tic = time.process_time()
     M = b ** 2
     vectorX = np.random.uniform(a,b,[1,num_puntos])
-
     vectorY = np.random.uniform(0,M,[1,num_puntos])
 
     comparatoria = np.array(fun(vectorX))
-
     Ndebajo = np.sum(vectorY < comparatoria)
 
     toc = time.process_time()
@@ -61,7 +58,7 @@ def integraVectores(fun, a, b, num_puntos = 10000):
     return 1000* (toc - tic) , (Ndebajo / num_puntos) * (b - a) * M
 
 def GenerateTimeGraph():
-    sizes = np.linspace(100, 1000000, 20).round().astype(int)
+    sizes = np.linspace(100, 2000000, 20).round().astype(int)
 
     time_vector = []
     time_point = []
@@ -74,13 +71,13 @@ def GenerateTimeGraph():
     plt.scatter(sizes, time_vector, c = 'red', label = 'Vector')
     plt.scatter(sizes, time_point, c = 'blue', label = 'Points')
     plt.legend()
-    plt.show()
-    # plt.savefig('sinbad.png')
+    # plt.show()
+    plt.savefig('timesComparation.png')
 
 def main() :
     print("Nuestra solucion:" ,intengra_mc(cuadrado, 1, 5)[1], "\n")
-    print("Solucion de vectores", integraVectores(cuadrado,1,5)[1], "\n")
-    print("Solucion real:", scipy.integrate.quad(cuadrado, 1, 5), "\n")
+    print("Solución de vectores", integraVectores(cuadrado,1,5)[1], "\n")
+    print("Solución real:", scipy.integrate.quad(cuadrado, 1, 5), "\n")
     GenerateTimeGraph()
 
 main()
