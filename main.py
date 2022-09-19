@@ -7,6 +7,7 @@ import scipy
 from scipy import integrate
 import time
 
+#Funciones que podemos utilizar
 def cuadrado(x):
     return x * x
 
@@ -16,6 +17,7 @@ def exponential(x):
 def logBaseTen(x):
     return math.log10(x)
 
+#Funcion para calcular la altura maxima de nuestra funcion en concreto
 def calcMaxHeight(func, a, b, num_samples = 300):
     maxHeight = 0
     interval = (b - a) / num_samples
@@ -27,6 +29,7 @@ def calcMaxHeight(func, a, b, num_samples = 300):
         acc += interval
     return maxHeight
 
+#Funcion en la que integramos a traves del método de monte carlo SIN vectores
 def intengra_mc(fun, a, b, num_puntos = 20000):
     tic = time.process_time()
     integral = 0
@@ -37,26 +40,28 @@ def intengra_mc(fun, a, b, num_puntos = 20000):
     for i in range (0,num_puntos):
         x = uniform(a,b)
         y = uniform(0, M)
-        if(fun(x) > y) : Ndebajo += 1 
+        if(fun(x) > y) : Ndebajo += 1 #si está debajo de la gráfica, sumamos 1
      
     integral = (Ndebajo / num_puntos) * (b - a) * M
     
     toc = time.process_time()
     return 1000* (toc - tic) , integral
 
+#Funcion en la que integramos a traves del método de monte carlo UTILIZANDO vectores
 def integraVectores(fun, a, b, num_puntos = 20000):
     tic = time.process_time()
     M = b ** 2
-    vectorX = np.random.uniform(a,b,[1,num_puntos])
-    vectorY = np.random.uniform(0,M,[1,num_puntos])
+    vectorX = np.random.uniform(a,b,[1,num_puntos])     #Coordenadas X de los puntos
+    vectorY = np.random.uniform(0,M,[1,num_puntos])     #Coordenadas Y de los puntos
 
-    comparatoria = np.array(fun(vectorX))
-    Ndebajo = np.sum(vectorY < comparatoria)
+    comparatoria = np.array(fun(vectorX))               #Calculamos el punto Y correspondiente para cada punto X
+    Ndebajo = np.sum(vectorY < comparatoria)            #Calculamos cuantos puntos han caido debajo de la gráfica
 
     toc = time.process_time()
 
     return 1000* (toc - tic) , (Ndebajo / num_puntos) * (b - a) * M
 
+#Cálculo y dibujado del tiempo de la funcion
 def GenerateTimeGraph():
     sizes = np.linspace(100, 2000000, 20).round().astype(int)
 
