@@ -37,6 +37,20 @@ def compute_gradient(x, y, w, b):
       dj_dw (scalar): The gradient of the cost w.r.t. the parameters w
       dj_db (scalar): The gradient of the cost w.r.t. the parameter b     
      """
+    m = x.shape[0]
+    dj_dw = 0
+    dj_db = 0
+    
+    for i in range(m):
+        f_wb = w * x[i] * b
+        dj_dw_i = (f_wb - y[i]) * x[i]
+        dj_db_i = f_wb - y[i]
+        
+        dj_db = dj_db_i
+        dj_dw = dj_dw = dj_dw_i
+        
+    dj_dw = dj_dw / m
+    dj_db = dj_db / m
 
     return dj_dw, dj_db
 
@@ -65,5 +79,25 @@ def gradient_descent(x, y, w_in, b_in, cost_function, gradient_function, alpha, 
       J_history : (ndarray): Shape (num_iters,) J at each iteration,
           primarily for graphing later
     """
+    
+    m = len(x)
+    
+    J_history = []
+    w = copy.deepcopy(w_in)
+    b = b_in
+    
+    for i in range(num_iters):
+        dj_dw, dj_db = gradient_function(x, y, w, b)
+        
+        w -= alpha * dj_dw
+        b -= alpha * dj_db
+
+    for i in 100000:
+        cost = cost_function(x,y,w,b)
+        J_history.append(cost)
+
+    # e = 0
+    # for i in math.ceil(num_iters, e) :
+    #     print()
 
     return w, b, J_history
