@@ -19,19 +19,6 @@ def compute_cost(x, y, w, b):
         total_cost (float): The cost of using w,b as the parameters for linear regression
                to fit the data points in x and y
     """
-    m = x.shape[0]
-
-    total_cost = 0
-    cost_sum = 0
-
-    for  i in range (m):
-        #we calculate the function relative to the parameters
-        f_wb = w * x[i] + b
-
-        cost = (f_wb - y[i])**2
-        cost_sum = cost_sum + cost
-
-    total_cost =  (1/ ( 2 * m)) * cost_sum
 
     return total_cost
 
