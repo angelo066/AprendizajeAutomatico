@@ -2,10 +2,6 @@ import numpy as np
 import copy
 import math
 
-
-#########################################################################
-# Cost function
-#
 def compute_cost(x, y, w, b):
     """
     Computes the cost function for linear regression.
@@ -19,6 +15,19 @@ def compute_cost(x, y, w, b):
         total_cost (float): The cost of using w,b as the parameters for linear regression
                to fit the data points in x and y
     """
+    m = x.shape[0]
+
+    total_cost = 0
+    cost_sum = 0
+
+    for  i in range (m):
+        #we calculate the function relative to the parameters
+        f_wb = w * x[i] + b
+
+        cost = (f_wb - y[i])**2
+        cost_sum = cost_sum + cost
+
+    total_cost =  (1/ ( 2 * m)) * cost_sum
 
     return total_cost
 
@@ -42,12 +51,12 @@ def compute_gradient(x, y, w, b):
     dj_db = 0
     
     for i in range(m):
-        f_wb = w * x[i] * b
-        dj_dw_i = (f_wb - y[i]) * x[i]
+        f_wb = w * x[i] + b
         dj_db_i = f_wb - y[i]
+        dj_dw_i = (f_wb - y[i]) * x[i]
         
-        dj_db = dj_db_i
-        dj_dw = dj_dw = dj_dw_i
+        dj_db += dj_db_i
+        dj_dw += dj_dw_i
         
     dj_dw = dj_dw / m
     dj_db = dj_db / m
@@ -92,9 +101,9 @@ def gradient_descent(x, y, w_in, b_in, cost_function, gradient_function, alpha, 
         w -= alpha * dj_dw
         b -= alpha * dj_db
 
-    for i in 100000:
-        cost = cost_function(x,y,w,b)
-        J_history.append(cost)
+        if i < 100000:
+            cost = cost_function(x,y,w,b)
+            J_history.append(cost)
 
     # e = 0
     # for i in math.ceil(num_iters, e) :
