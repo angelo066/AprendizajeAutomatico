@@ -38,20 +38,12 @@ def compute_cost(X, y, w, b):
     Returns
       cost (scalar)    : cost
     """
-    X_norm, mu, sigma = zscore_normalize_features(X)
-
     cost = 0
     m = y.shape[0]
-
     for i in range(m):
-      fun = (w * X_norm[i]) + b
-      c = fun - y[i]
-      aux = np.sum(c) ** 2 
-      cost += aux
-
-    cost = cost / (2*m)
-
-    return cost
+      fun = np.dot(w , X[i]) + b
+      cost += np.sum(fun - y[i]) ** 2 
+    return cost / (2*m)
 
 def compute_gradient(X, y, w, b):
     """
@@ -65,8 +57,22 @@ def compute_gradient(X, y, w, b):
       dj_dw : (ndarray Shape (n,)) The gradient of the cost w.r.t. the parameters w. 
       dj_db : (scalar)             The gradient of the cost w.r.t. the parameter b. 
     """
-    dj_db = 18
-    dj_dw = 18
+    dj_db = 0
+    dj_dw = 0
+
+    m = y.shape[0]
+
+    for i in range(m):
+      fun = np.dot(w , X[i]) + b
+      dj_dw_i = (fun - y[i]) * X[i]
+      dj_db_i = (fun - y[i])
+
+      dj_db += dj_db_i
+      dj_dw += dj_dw_i
+
+    dj_dw = dj_dw / m
+    dj_db = dj_db / m
+
     return dj_db, dj_dw
 
 

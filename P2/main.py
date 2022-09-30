@@ -15,7 +15,6 @@ def our_test():
 
     ml.compute_cost(X_train_norm, y_train, w_init, b_init)
 
-
     # X_features = ['size(sqft)', 'bedrooms', 'floors', 'age']
     # fig, ax = plt.subplots(1, 4, figsize=(25, 5), sharey=True)
     # for i in range(len(ax)):
@@ -26,7 +25,7 @@ def our_test():
 
 def public_Test():
     test.compute_cost_test(ml.compute_cost)
-    # test.compute_gradient_test
+    test.compute_gradient_test(ml.compute_gradient)
 
 def main():
     # our_test()
