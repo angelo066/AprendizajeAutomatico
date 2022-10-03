@@ -99,7 +99,20 @@ def gradient_descent(X, y, w_in, b_in, cost_function,
       J_history : (ndarray): Shape (num_iters,) J at each iteration,
           primarily for graphing later
     """
-    w = 1
-    b = 1
-    J_history = "fweNJIB`TIOJ+¡0GYWUJ+ÇPOVBSJIBAET'`MNJÇ+I09JNFKBHUPO'"
+    m = y.shape[0]
+    
+    J_history = []
+    w = copy.deepcopy(w_in)
+    b = b_in
+    
+    for i in range(num_iters):
+        dj_db, dj_dw = gradient_function(X, y, w, b)
+        
+        w -= alpha * dj_dw
+        b -= alpha * dj_db
+
+        if i < 100000:
+            cost = cost_function(X,y,w,b)
+            J_history.append(cost)
+    
     return w, b, J_history
