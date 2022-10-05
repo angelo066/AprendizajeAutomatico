@@ -17,7 +17,12 @@ def zscore_normalize_features(X):
       mu (ndarray (n,))     : mean of each feature
       sigma (ndarray (n,))  : standard deviation of each feature
     """
-    X_norm = np.empty((X.shape[0], X.shape[1]))
+    X_norm = 0
+
+    if(len(X.shape) > 1):
+      X_norm = np.empty((X.shape[0], X.shape[1]))
+    else:
+      X_norm = np.empty((X.shape[0]))
 
     mu = np.mean(X , axis = 0)
     sigma = np.std(X , axis = 0)
@@ -38,12 +43,15 @@ def compute_cost(X, y, w, b):
     Returns
       cost (scalar)    : cost
     """
-    cost = 0
+    # cost = 0
     m = y.shape[0]
-    for i in range(m):
-      fun = np.dot(w , X[i]) + b
-      cost += np.sum(fun - y[i]) ** 2 
-    return cost / (2*m)
+    #OUR METHOD
+    # for i in range(m):
+    #   fun = np.dot(w , X[i]) + b
+    #   cost += np.sum(fun - y[i]) ** 2 
+    # return cost / (2*m)
+
+    return  np.sum(((X @ w + b) - y ) ** 2) / (2 * m )
 
 def compute_gradient(X, y, w, b):
     """
@@ -57,23 +65,31 @@ def compute_gradient(X, y, w, b):
       dj_dw : (ndarray Shape (n,)) The gradient of the cost w.r.t. the parameters w. 
       dj_db : (scalar)             The gradient of the cost w.r.t. the parameter b. 
     """
-    dj_db = 0
-    dj_dw = 0
+    # dj_db = 0
+    # dj_dw = 0
 
     m = y.shape[0]
 
-    for i in range(m):
-      fun = np.dot(w , X[i]) + b
-      dj_dw_i = (fun - y[i]) * X[i]
-      dj_db_i = (fun - y[i])
+    #OUR METHOD
+    # for i in range(m):
+    #   fun = np.dot(w , X[i]) + b
+    #   dj_dw_i = (fun - y[i]) * X[i]
+    #   dj_db_i = (fun - y[i])
 
-      dj_db += dj_db_i
-      dj_dw += dj_dw_i
+    #   dj_db += dj_db_i
+    #   dj_dw += dj_dw_i
 
-    dj_dw = dj_dw / m
-    dj_db = dj_db / m
+    # dj_dw = dj_dw / m
+    # dj_db = dj_db / m
 
-    return dj_db, dj_dw
+    # return dj_db, dj_dw
+
+    fun = X @ w + b
+    e = fun - y
+    dj_db = np.sum(e) / m
+    dj_dw = (X.T @ e) / m
+
+    return dj_db , dj_dw  
 
 
 def gradient_descent(X, y, w_in, b_in, cost_function,
