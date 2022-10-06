@@ -1,7 +1,8 @@
+from asyncio.windows_events import NULL
+from cmath import log
 import numpy as np
 import copy
 import math
-
 
 def sigmoid(z):
     """
@@ -14,13 +15,14 @@ def sigmoid(z):
         g (ndarray): sigmoid(z), with the same shape as z
 
     """
-
-    return g
-
+    return  1/(1 + (math.e ** -z))
 
 #########################################################################
 # logistic regression
 #
+def fun_wb(X, w, b):
+  return sigmoid((X @ w) + b)
+
 def compute_cost(X, y, w, b, lambda_=None):
     """
     Computes the cost over all examples
@@ -33,8 +35,21 @@ def compute_cost(X, y, w, b, lambda_=None):
     Returns:
       total_cost: (scalar)         cost
     """
+    total_cost = 0
+    m = y.shape[0]
 
-    return total_cost
+    # fun_val = fun_wb(X,w, b)
+    # total_cost = np.sum((y + np.log(fun_val)) - (1 - y) * np.log(1 - fun_val))
+    
+    for i in range(m):
+      fun_val = fun_wb(X[i],w, b)
+
+      log_cost = np.log(fun_val)
+      log_cost2 = np.log(1 - fun_val)
+
+      total_cost += (-y[i] * log_cost) -  (1 - y [i]) * log_cost2
+
+    return (total_cost/m)
 
 
 def compute_gradient(X, y, w, b, lambda_=None):
@@ -51,7 +66,8 @@ def compute_gradient(X, y, w, b, lambda_=None):
       dj_db: (scalar)                The gradient of the cost w.r.t. the parameter b.
       dj_dw: (array_like Shape (n,1)) The gradient of the cost w.r.t. the parameters w.
     """
-
+    dj_db = 0
+    dj_dw = 0  
     return dj_db, dj_dw
 
 
@@ -70,7 +86,7 @@ def compute_cost_reg(X, y, w, b, lambda_=1):
     Returns:
       total_cost: (scalar)         cost 
     """
-
+    total_cost = 0
     return total_cost
 
 
@@ -89,7 +105,8 @@ def compute_gradient_reg(X, y, w, b, lambda_=1):
       dj_dw: (ndarray Shape (n,)) The gradient of the cost w.r.t. the parameters w. 
 
     """
-
+    dj_db = 0 
+    dj_dw = 0
     return dj_db, dj_dw
 
 
@@ -119,7 +136,9 @@ def gradient_descent(X, y, w_in, b_in, cost_function, gradient_function, alpha, 
       J_history : (ndarray): Shape (num_iters,) J at each iteration,
           primarily for graphing later
     """
-
+    w = 0 
+    b = 0 
+    J_history = 0
     return w, b, J_history
 
 
@@ -140,5 +159,5 @@ def predict(X, w, b):
     p: (ndarray (m,1))
         The predictions for X using a threshold at 0.5
     """
-
+    p = 0
     return p
