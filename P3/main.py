@@ -22,28 +22,7 @@ def our_test():
     X = np.array([1200, 3, 1, 40])
     X = (X - mu) / sigma
     test = np.sum((X @ w)) + b
-    target_value = 318.85441519816953
-    assert np.isclose(test, target_value,
-                      rtol=1e-4), f"Case 1: prediction is wrong: {test} != {target_value}"
-    print("\033[92mTest prediction passed!")
-
-    Y_prediction = (X_train_norm @ w) + b
-
-    X_features = ['size(sqft)', 'bedrooms', 'floors', 'age']
-    fig, ax = plt.subplots(1, 4, figsize=(25, 5), sharey=True)
-    plt.title('Target versus prediction using z-score normalized model.')
-    for i in range(len(ax)):
-        ax[i].scatter(X_train_norm[:, i], y_train, label = 'target')
-        ax[i].scatter(X_train_norm[:, i], Y_prediction, color = 'orange', label = 'prediction')
-        ax[i].set_xlabel(X_features[i])
-        
-    plt.legend()
-    ax[0].set_ylabel("Price (1000's)")
-    
-
-    # plt.show()
-    plt.savefig('linearRegression_prediction.pdf')
-
+    print(test)
 
 def public_Test():
     test.compute_cost_test(ml.compute_cost)
