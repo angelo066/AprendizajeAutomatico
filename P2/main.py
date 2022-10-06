@@ -41,8 +41,8 @@ def our_test():
     ax[0].set_ylabel("Price (1000's)")
     
 
-    # plt.show()
-    plt.savefig('linearRegression_prediction.pdf')
+    plt.show()
+    # plt.savefig('linearRegression_prediction.pdf')
 
 
 def public_Test():

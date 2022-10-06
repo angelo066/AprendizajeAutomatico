@@ -51,7 +51,6 @@ def compute_cost(X, y, w, b, lambda_=None):
 
     return (total_cost/m)
 
-
 def compute_gradient(X, y, w, b, lambda_=None):
     """
     Computes the gradient for logistic regression
@@ -66,9 +65,19 @@ def compute_gradient(X, y, w, b, lambda_=None):
       dj_db: (scalar)                The gradient of the cost w.r.t. the parameter b.
       dj_dw: (array_like Shape (n,1)) The gradient of the cost w.r.t. the parameters w.
     """
-    dj_db = 0
+    print("Computing Gradient...")
+
     dj_dw = 0  
-    return dj_db, dj_dw
+    dj_db = 0
+
+    m = y.shape[0]
+
+    #en teoria hay que hacer un doble for
+    for i in range(m):
+      dj_dw += (fun_wb(X[i],w,b) - y[i]) * X[i]
+      dj_db += (fun_wb(X[i],w,b) - y[i])
+
+    return dj_db / m, dj_dw / m
 
 
 #########################################################################

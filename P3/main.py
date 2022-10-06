@@ -8,7 +8,8 @@ def our_test():
 
 def public_Test():
     # test.sigmoid_test(lr.sigmoid)
-    test.compute_cost_test(lr.compute_cost)
+    # test.compute_cost_test(lr.compute_cost)
+    test.compute_gradient_test(lr.compute_gradient)
 
 def main():
     public_Test()
