@@ -65,8 +65,6 @@ def compute_gradient(X, y, w, b, lambda_=None):
       dj_db: (scalar)                The gradient of the cost w.r.t. the parameter b.
       dj_dw: (array_like Shape (n,1)) The gradient of the cost w.r.t. the parameters w.
     """
-    print("Computing Gradient...")
-
     dj_dw = 0  
     dj_db = 0
 
@@ -148,6 +146,20 @@ def gradient_descent(X, y, w_in, b_in, cost_function, gradient_function, alpha, 
     w = 0 
     b = 0 
     J_history = 0
+
+    J_history = []
+    w = copy.deepcopy(w_in)
+    b = b_in
+    
+    for i in range(num_iters):
+      dj_db, dj_dw = gradient_function(X, y, w, b)
+      w -= alpha * dj_dw
+      b -= alpha * dj_db
+
+      if i < 100000:
+        cost = cost_function(X,y,w,b)
+        J_history.append(cost)
+
     return w, b, J_history
 
 
