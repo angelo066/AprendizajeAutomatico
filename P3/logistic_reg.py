@@ -180,5 +180,4 @@ def predict(X, w, b):
     p: (ndarray (m,1))
         The predictions for X using a threshold at 0.5
     """
-    p = 0
-    return p
+    return (X @ w) + b

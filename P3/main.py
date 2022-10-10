@@ -10,14 +10,18 @@ def our_test():
     #initial values
     b_init = -8
     w_init = np.array([0.0, 0.0])
-    iterations = 10000
+    iterations = 7000
     alpha = 0.001
     #TRAINING
     w , b, history = lr.gradient_descent(X, Y, w_init, b_init,lr.compute_cost, lr.compute_gradient, alpha , iterations)
     #Predict Values
-    lr.predict(X, w, b)
+    Y_predicted = lr.predict(X, w, b)
+    print(Y_predicted)
+    
     #Show values and function
+    # utils.plot_data(X, Y, "y_=1", "y_=0", 'green', 'blue')
     utils.plot_decision_boundary(w, b, X, Y)
+    
     plt.legend()
     plt.show()
 
