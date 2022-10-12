@@ -8,10 +8,10 @@ def our_test():
     #read data
     X , Y = readData()
     #initial values
-    b_init = -8
+    b_init = 1
     w_init = np.array([0.0, 0.0])
-    iterations = 7000
-    alpha = 0.001
+    iterations = 10000
+    alpha = 0.01
     #TRAINING
     w , b, history = lr.gradient_descent(X, Y, w_init, b_init,lr.compute_cost, lr.compute_gradient, alpha , iterations)
     #Predict Values
@@ -39,8 +39,8 @@ def readData():
     return X_train, y_train
 
 def main():
-    # our_test()
-    public_Test()
+    our_test()
+    # public_Test()
     # utils.plot_data(X, Y)
 
 if __name__ == '__main__':
