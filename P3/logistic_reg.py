@@ -134,7 +134,15 @@ def compute_gradient_reg(X, y, w, b, lambda_=1):
     """
     dj_db = 0 
     dj_dw = 0
-    return dj_db, dj_dw
+    m = y.shape[0]
+    
+    for i in range(m):
+      dj_db += fun_wb(X[i], w , b) - y[i]
+      dj_dw += (fun_wb(X[i], w, b) - y[i]) * X[i]
+    
+    dj_dw += (lambda_ * w)
+    
+    return dj_db / m, dj_dw / m
 
 
 #########################################################################

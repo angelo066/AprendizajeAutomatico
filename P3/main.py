@@ -28,7 +28,8 @@ def our_test():
 def public_Test():
     # test.sigmoid_test(lr.sigmoid)
     # test.compute_cost_test(lr.compute_cost)
-    test.compute_cost_reg_test(lr.compute_cost_reg)
+    # test.compute_cost_reg_test(lr.compute_cost_reg)
+    test.compute_gradient_reg_test(lr.compute_gradient_reg)
 
 def readData():
     data = np.loadtxt("./data/ex2data1.txt", delimiter=',', skiprows=1)
