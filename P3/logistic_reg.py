@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
 from cmath import log
+from re import M
 import numpy as np
 import copy
 import math
@@ -94,6 +95,25 @@ def compute_cost_reg(X, y, w, b, lambda_=1):
       total_cost: (scalar)         cost 
     """
     total_cost = 0
+    m = y.shape[0]
+    
+    for i in range(m):
+      
+      fun_val = fun_wb(X[i],w, b)
+
+      log_cost = np.log(fun_val)
+      log_cost2 = np.log(1 - fun_val)
+
+      total_cost += (-y[i] * log_cost) -  (1 - y [i]) * log_cost2
+      
+    total_cost = total_cost / m
+    
+    w_cost = np.sum(w**2)
+      
+    w_cost = (w_cost * lambda_) / (2 * m)
+     
+    total_cost += w_cost 
+    
     return total_cost
 
 

@@ -28,7 +28,7 @@ def our_test():
 def public_Test():
     # test.sigmoid_test(lr.sigmoid)
     # test.compute_cost_test(lr.compute_cost)
-    test.compute_gradient_test(lr.compute_gradient)
+    test.compute_cost_reg_test(lr.compute_cost_reg)
 
 def readData():
     data = np.loadtxt("./data/ex2data1.txt", delimiter=',', skiprows=1)
@@ -38,8 +38,8 @@ def readData():
     return X_train, y_train
 
 def main():
-    our_test()
-    # public_Test()
+    # our_test()
+    public_Test()
     # utils.plot_data(X, Y)
 
 if __name__ == '__main__':
