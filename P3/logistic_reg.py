@@ -16,13 +16,13 @@ def sigmoid(z):
         g (ndarray): sigmoid(z), with the same shape as z
 
     """
-    return  1/(1 + (math.e ** -z))
+    return  1/(1 + np.exp(-z))
 
 #########################################################################
 # logistic regression
 #
 def fun_wb(X, w, b):
-  return sigmoid((X @ w) + b)
+  return sigmoid(X @ w + b)
 
 def compute_cost(X, y, w, b, lambda_=None):
     """
@@ -53,19 +53,6 @@ def compute_cost(X, y, w, b, lambda_=None):
     return (total_cost/m)
 
 def compute_gradient(X, y, w, b, lambda_=None):
-    """
-    Computes the gradient for logistic regression
-
-    Args:
-      X : (ndarray Shape (m,n)) variable such as house size
-      y : (array_like Shape (m,1)) actual value
-      w : (array_like Shape (n,1)) values of parameters of the model
-      b : (scalar)                 value of parameter of the model
-      lambda_: unused placeholder
-    Returns
-      dj_db: (scalar)                The gradient of the cost w.r.t. the parameter b.
-      dj_dw: (array_like Shape (n,1)) The gradient of the cost w.r.t. the parameters w.
-    """
     dj_dw = 0  
     dj_db = 0
 
@@ -140,9 +127,7 @@ def compute_gradient_reg(X, y, w, b, lambda_=1):
       dj_db += fun_wb(X[i], w , b) - y[i]
       dj_dw += (fun_wb(X[i], w, b) - y[i]) * X[i]
     
-    dj_dw += (lambda_ * w)
-    
-    return dj_db / m, dj_dw / m
+    return dj_db / m, (dj_dw / m) + (np.dot(np.divide(lambda_,m),w))
 
 
 #########################################################################
@@ -171,10 +156,6 @@ def gradient_descent(X, y, w_in, b_in, cost_function, gradient_function, alpha, 
       J_history : (ndarray): Shape (num_iters,) J at each iteration,
           primarily for graphing later
     """
-    w = 0 
-    b = 0 
-    J_history = 0
-
     J_history = []
     w = copy.deepcopy(w_in)
     b = b_in
@@ -208,8 +189,7 @@ def predict(X, w, b):
     p: (ndarray (m,1))
         The predictions for X using a threshold at 0.5
     """
-    n = (X @ w) + b
-    if(n >= 0.5):
+    if(fun_wb(X, w, b)> 0.5):
       return 1
 
     return 0

@@ -1,6 +1,11 @@
 import numpy as np
 import copy
 import math
+"""
+Compute Cost es la suma de residuos al cuadrado. 
+Esto nos permite ver como va mejorando el entrenamiento. 
+El cost en cada iteracion deberia ser menor al anterior
+"""
 
 def compute_cost(x, y, w, b):
     """

@@ -6,8 +6,8 @@ def plot_data(X, y, pos_label="y=1", neg_label="y=0", color1 = "black", color2 =
     positive = y == 1
     negative = y == 0
 
-    plt.plot(X[positive, 0], X[positive, 1], 'k+', label=pos_label, color = color1)
-    plt.plot(X[negative, 0], X[negative, 1], 'yo', label=neg_label, color = color2)
+    plt.plot(X[positive, 0], X[positive, 1], 'k+', label=pos_label)
+    plt.plot(X[negative, 0], X[negative, 1], 'yo', label=neg_label)
 
 def map_feature(X1, X2, degree=6):
     """
