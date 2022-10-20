@@ -1,4 +1,6 @@
 import numpy as np
+import logistic_reg as lr
+
 
 
 #########################################################################
@@ -32,7 +34,17 @@ def oneVsAll(X, y, n_labels, lambda_):
          This is a matrix of shape (K x n+1) where K is number of classes
          (ie. `n_labels`) and n is number of features without the bias.
      """
-    all_theta = 0
+    all_theta = np.zeros((n_labels, X.shape[1] + 1))
+    
+    for i in range(n_labels):
+        newRow =  np.where(y == i, 1, 0)
+
+        w_init = np.zeros(X.shape[1])
+        b = 0
+        theta_i, b_b, hisotry = lr.gradient_descent(X, newRow, w_init, b, lr.compute_cost_reg, lr.compute_gradient_reg, lambda_, 2000)
+        
+        all_theta[i, 0] = b_b
+        all_theta[i, 1:] = theta_i
 
     return all_theta
 
@@ -63,7 +75,28 @@ def predictOneVsAll(all_theta, X):
     p : array_like
         The predictions for each data point in X. This is a vector of shape (m, ).
     """
-    p = 0
+    
+
+    # Para cada uno tienes que pasar el 0 de su linea = b
+    # Con W, que es el resto de la linea
+    # Y con X
+    m = X.shape[0]
+
+    p = np.zeros(m)
+
+    max = 0
+    for i in range(m):
+        # p[i] = lr.fun_wb(X[i], all_theta[i, 1:])
+        label = 0
+        for j in range(all_theta.shape[0]):
+           n_Result = lr.fun_wb(X[i], all_theta[j, 1:], all_theta[j, 0])
+           
+           if(n_Result > max) : 
+                max = n_Result
+                label = j
+            
+        p[i] = label
+
     return p
 
 

@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import utils as utils
 from scipy.io import loadmat
 
+
+import multi_class as mC
 import logistic_reg as lr
 import public_tests as test
 # def showData():
@@ -70,6 +72,16 @@ def show_samples():
     utils.displayData(X[rand_indices, :])
     plt.show()
 
+def our_test():
+    X , Y = readData("ex3data1.mat")
+
+    n_label = 10
+    alpha = 0.001
+    all_theta = mC.oneVsAll(X, Y, n_label, alpha)
+
+    print(mC.predictOneVsAll(all_theta, X))
+
+
 def readData(file):
     data = loadmat('data/ex3data1.mat', squeeze_me=True)
 
@@ -80,8 +92,8 @@ def readData(file):
 
 def main():
     # show_samples()
-    
-    public_Test()
+    our_test()    
+    # public_Test()
 
 
 if __name__ == '__main__':
