@@ -78,8 +78,16 @@ def our_test():
     n_label = 10
     alpha = 0.001
     all_theta = mC.oneVsAll(X, Y, n_label, alpha)
-
-    print(mC.predictOneVsAll(all_theta, X))
+    
+    p = mC.predictOneVsAll(all_theta, X)
+    
+    acertados = 0
+    for i in range(p.shape[0]):
+        if(Y[i] == p[i]):
+            acertados += 1
+            
+    #print((acertados / Y.shape[0]) * 100)
+    
 
 
 def readData(file):

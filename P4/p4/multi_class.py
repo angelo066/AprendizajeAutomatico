@@ -88,13 +88,14 @@ def predictOneVsAll(all_theta, X):
     for i in range(m):
         # p[i] = lr.fun_wb(X[i], all_theta[i, 1:])
         label = 0
+        
         for j in range(all_theta.shape[0]):
            n_Result = lr.fun_wb(X[i], all_theta[j, 1:], all_theta[j, 0])
            
            if(n_Result > max) : 
                 max = n_Result
                 label = j
-            
+        #No entiendo por que aqui siempre es 0         
         p[i] = label
 
     return p
