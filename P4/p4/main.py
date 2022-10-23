@@ -76,7 +76,7 @@ def our_test():
     X , Y = readData("ex3data1.mat")
 
     n_label = 10
-    alpha = 0.001
+    alpha = 0.1
     all_theta = mC.oneVsAll(X, Y, n_label, alpha)
     
     p = mC.predictOneVsAll(all_theta, X)
@@ -86,7 +86,7 @@ def our_test():
         if(Y[i] == p[i]):
             acertados += 1
             
-    #print((acertados / Y.shape[0]) * 100)
+    print((acertados / Y.shape[0]) * 100)
     
 
 
