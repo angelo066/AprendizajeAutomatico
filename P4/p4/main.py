@@ -72,6 +72,24 @@ def show_samples():
     utils.displayData(X[rand_indices, :])
     plt.show()
 
+def BExample():
+    data = loadmat('data/ex3data1.mat', squeeze_me=True)
+    X = data['X']
+    Y = data['y']
+    
+    weights = loadmat('data/ex3weights.mat')
+    theta1, theta2 = weights['Theta1'], weights['Theta2']
+    
+    result = mC.predict(theta1, theta2, X)
+    
+    acertados = 0
+    for i in range(len(Y)):
+        if(Y[i] == result[i]):
+            acertados += 1
+            
+    print((acertados / Y.shape[0]) * 100)
+
+
 def our_test():
     X , Y = readData("ex3data1.mat")
 
@@ -100,8 +118,9 @@ def readData(file):
 
 def main():
     # show_samples()
-    our_test()    
+    # our_test()    
     # public_Test()
+    BExample()
 
 
 if __name__ == '__main__':

@@ -117,5 +117,20 @@ def predict(theta1, theta2, X):
         Predictions vector containing the predicted label for each example.
         It has a length equal to the number of examples.
     """
-    p = 0
+    
+    m = X.shape[0]
+    #Input matrix
+    X1s = np.c_[np.ones(m), X]
+    #First layer
+    first = np.dot(theta1, X1s.T)
+    #Sigmoid of first multiplication
+    X2s = lr.sigmoid(first)
+    #new input
+    X2s = np.c_[np.ones(len(X2s[0])), X2s.T]
+    #second layer
+    second = np.dot(theta2, X2s.T)
+    #output
+    p = lr.sigmoid(second)
+    #Final output
+    p = np.argmax(p.T, 1)  
     return p
