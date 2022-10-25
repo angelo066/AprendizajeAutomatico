@@ -7,56 +7,6 @@ from scipy.io import loadmat
 import multi_class as mC
 import logistic_reg as lr
 import public_tests as test
-# def showData():
-#     w , b , X, Y = our_test_B()
-
-#     correct_ones = 0
-#     for i in range(Y.shape[0]):
-#         if(Y[i] == lr.predict(X[i], w,b)):
-#             correct_ones +=1
-    
-#     accuracy =(f"The accuracy is {(correct_ones/Y.shape[0])*100} %")
-#     print(accuracy)
-
-#     plt.title(accuracy)
-#     #Show values and function
-#     # utils.plot_data(X, Y, "y_=1", "y_=0", 'green', 'blue')
-#     utils.plot_decision_boundary(w, b, X, Y)
-#     plt.legend()
-#     plt.savefig('partB.pdf')
-#     # plt.show()
-
-# def our_test_A():
-#     #read data
-#     X , Y = readData("ex2data1.txt")
-#     #initial values
-#     b_init = -8
-#     w_init = np.array([0.0, 0.0])
-#     iterations = 1000
-#     alpha = 0.001
-#     #TRAINING
-#     w , b, history = lr.gradient_descent(X, Y, w_init, b_init,lr.compute_cost, lr.compute_gradient, alpha , iterations)
-#     #Predict Values
-#     return w, b, X, Y
-    
-
-# def our_test_B():
-#     #read data
-#     X , Y = readData("ex2data2.txt")
-#     #initial values
-#     b_init = 1
-#     iterations = 10000
-#     alpha = 0.01
-
-#     #TRAINING
-#     #X[:, 0] -z> : todas las filas de la columna 0
-
-#     X_stack = utils.map_feature(X[:,0],X[:,1])
-#     w_init = np.zeros(X_stack.shape[1])
- 
-#     w , b, history = lr.gradient_descent(X_stack, Y, w_init, b_init,lr.compute_cost_reg, lr.compute_gradient_reg, alpha , iterations)
-
-#     return w, b, X_stack, Y
 
 def public_Test():
     test.sigmoid_test(lr.sigmoid)
@@ -72,7 +22,31 @@ def show_samples():
     utils.displayData(X[rand_indices, :])
     plt.show()
 
-def BExample():
+def compareEquals(Y, p):
+    acertados = 0
+    m = p.shape[0]
+    for i in range(m):
+        if(Y[i] == p[i]):
+            acertados += 1
+    
+    return (acertados / m) * 100
+
+def our_test_A():
+    X , Y = readData("ex3data1.mat")
+
+    n_label = 10
+    alpha = 0.001
+    print("OneVsAll...")
+    all_theta = mC.oneVsAll(X, Y, n_label, alpha)
+    # print(all_theta)
+    print("Predicting...")
+    p = mC.predictOneVsAll(all_theta, X)
+    
+    percentage = compareEquals(Y, p)
+    
+    print(f"A: {percentage}%")
+
+def our_test_B():
     data = loadmat('data/ex3data1.mat', squeeze_me=True)
     X = data['X']
     Y = data['y']
@@ -82,30 +56,9 @@ def BExample():
     
     result = mC.predict(theta1, theta2, X)
     
-    acertados = 0
-    for i in range(len(Y)):
-        if(Y[i] == result[i]):
-            acertados += 1
-            
-    print((acertados / Y.shape[0]) * 100)
-
-
-def our_test():
-    X , Y = readData("ex3data1.mat")
-
-    n_label = 10
-    alpha = 0.1
-    all_theta = mC.oneVsAll(X, Y, n_label, alpha)
+    percentage = compareEquals(Y, result)
     
-    p = mC.predictOneVsAll(all_theta, X)
-    
-    acertados = 0
-    for i in range(p.shape[0]):
-        if(Y[i] == p[i]):
-            acertados += 1
-            
-    print((acertados / Y.shape[0]) * 100)
-    
+    print(f"B: {percentage}%")
 
 
 def readData(file):
@@ -118,9 +71,11 @@ def readData(file):
 
 def main():
     # show_samples()
-    # our_test()    
+
+    our_test_A()
+    our_test_B()
+
     # public_Test()
-    BExample()
 
 
 if __name__ == '__main__':

@@ -36,14 +36,14 @@ def oneVsAll(X, y, n_labels, lambda_):
      """
     all_theta = np.zeros((n_labels, X.shape[1] + 1))
     
-    alpha = 0.1
+    alpha = 1
     
     for i in range(n_labels):
         newRow =  np.where(y == i, 1, 0)
 
         w_init = np.zeros(X.shape[1])
         b = 0
-        theta_i, b_b, hisotry = lr.gradient_descent(X, newRow, w_init, b, lr.compute_cost_reg, lr.compute_gradient_reg, alpha, 2000, lambda_)
+        theta_i, b_b, hisotry = lr.gradient_descent(X, newRow, w_init, b, lr.compute_cost_reg, lr.compute_gradient_reg, alpha, 1500, lambda_)
         
         all_theta[i, 0] = b_b
         all_theta[i, 1:] = theta_i
@@ -82,13 +82,29 @@ def predictOneVsAll(all_theta, X):
     # Para cada uno tienes que pasar el 0 de su linea = b
     # Con W, que es el resto de la linea
     # Y con X
-    m = X.shape[0]
+    m = len(X)
 
     p = np.zeros(m)
-        
-    p = np.argmax(lr.fun_wb(X, all_theta[:, 1:].T, all_theta[:, 0]), 1)
 
-    return p
+    #Iterative
+    # for i in range(m):
+    #     # p[i] = lr.fun_wb(X[i], all_theta[i, 1:])
+    #     label = 0
+    #     max = 0
+    #     for j in range(all_theta.shape[0]):
+    #        n_Result = lr.fun_wb(X[i], all_theta[j, 1:], all_theta[j, 0])
+    #        if(n_Result > max) : 
+    #             max = n_Result
+    #             label = j
+    #     print(label)
+    #     p[i] = label
+
+    # return p
+    #Vectorized
+    p_ = np.argmax(lr.fun_wb(X , all_theta[:, 1:].T , all_theta[:, 0]), 1)
+    # print(np.array_equal(p , p_))
+    return p_
+
 
 
 #########################################################################
