@@ -1,0 +1,38 @@
+comentarios 
+
+datos artificiales
+
+generar datos de entrenamiento que se parecen a un polinomio de grado dos
+
+
+llamar a gen_data para generar los datos de entrenamiento
+
+dividir esos datos en entrenamiento, validacion , prueba
+
+para hacerlo usarelos reversion lineal regularizada
+
+usaremos las funciones ya implementadas usando scikit learn -> metodos de clasificacion, regularizacion ...
+
+
+usaremos de  primeras sklearn.lineal_model.LinearRegression
+
+from sklearnlineal_model import LinearRegression
+
+X = np.array ..
+
+y = np.dot...
+
+reg = LinearRegression().fit(X,y) -> fit entrena, hacer el descenso de gradiente, busca la mejor recta para X e Y.
+El resultado del entraniemit esta dentro de la clase
+
+
+reg.score(X,y) => 1.0  acierto o porcentaje de acierto con los datos de entrenamiento
+
+reg.coef -> w
+reg.intercept->b
+
+reg.predict(X) dame la Y 
+
+sickit learn necesita matrices bidimensionales de varios numeros de columnas o filas
+
+pero un vector no-> triquiñuela -> x = xtrain [:, None]
