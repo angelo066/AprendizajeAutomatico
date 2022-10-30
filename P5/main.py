@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 
 import nn as neuralNet
-
+import utils
 import logisticReg as lr
 # import public_tests as test
 
@@ -57,9 +57,10 @@ def our_test_A():
     theta1, theta2 = weights['Theta1'], weights['Theta2']
 
     lambda_ = 1
-    cost = neuralNet.cost(theta1, theta2,X, Y, lambda_)
-    print(cost)
-
+    # cost = neuralNet.cost(theta1, theta2,X, Y, lambda_)
+    # print(cost)
+    # utils.checkNNGradients(neuralNet.backprop)
+    neuralNet.backprop(theta1, theta2,X, Y, lambda_)
     # When n=2
 
     # n_label = 10

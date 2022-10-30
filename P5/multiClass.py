@@ -113,17 +113,17 @@ def predictOneVsAll(all_theta, X):
 def predict(theta1, theta2, X):
     m = X.shape[0]
     #Input matrix
-    X1s = np.c_[np.ones(m), X]
+    a1 = np.c_[np.ones(m), X]
     #First layer
-    first = np.dot(theta1, X1s.T)
+    z2 = np.dot(theta1, a1.T)
     #Sigmoid of first multiplication
-    X2s = lr.sigmoid(first)
+    a2 = lr.sigmoid(z2)
     #new input
-    X2s = np.c_[np.ones(len(X2s[0])), X2s.T]
+    a2 = np.c_[np.ones(len(a2[0])), a2.T]
     #second layer
-    second = np.dot(theta2, X2s.T)
+    z3 = np.dot(theta2, a2.T) #-> a4
     #output
-    p = lr.sigmoid(second)
+    a3 = lr.sigmoid(z3)
 
     #Final output
-    return p.T
+    return a3.T

@@ -1,5 +1,8 @@
 import numpy as np
 import multiClass as mC
+import logisticReg as lr
+
+
 def cost(theta1, theta2, X, y, lambda_):
     """
     Compute cost for 2-layer neural network. 
@@ -46,6 +49,8 @@ def cost(theta1, theta2, X, y, lambda_):
 
     return J + reg_tem
 
+def g_dev(z, a): 
+    a * (np.ones(a.shape[0]) - a)
 
 
 def backprop(theta1, theta2, X, y, lambda_):
@@ -88,10 +93,35 @@ def backprop(theta1, theta2, X, y, lambda_):
         It has shape (output layer size x 2nd hidden layer size + 1)
 
     """
+    
+    m = X.shape[0]
+    #Input matrix
+    a1 = np.c_[np.ones(m), X]
+    #First layer
+    z2 = np.dot(theta1, a1.T)
+    #Sigmoid of first multiplication
+    a2 = lr.sigmoid(z2)
+    #new input
+    a2 = np.c_[np.ones(len(a2[0])), a2.T]
+    #second layer
+    z3 = np.dot(theta2, a2.T) #-> a4
+    #output
+    a3 = lr.sigmoid(z3)
+    
+    a3 = a3
+    
     J = 0
 
     grad1 = 0
     grad2 = 0
+
+    
+    error_3 = a3.T - y
+
+    weight_error = theta2.T @ error_3.T
+    error_2 = weight_error * g_dev(z3, a3)
+
+    print(error_2)
 
     return (J, grad1, grad2)
 
