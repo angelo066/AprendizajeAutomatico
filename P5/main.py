@@ -56,9 +56,12 @@ def our_test_A():
     weights = loadmat('data/ex3weights.mat')
     theta1, theta2 = weights['Theta1'], weights['Theta2']
 
-    lambda_ = 0.001
+    lambda_ = 1
     cost = neuralNet.cost(theta1, theta2,X, Y, lambda_)
     print(cost)
+
+    # When n=2
+
     # n_label = 10
     # alpha = 0.001
     # print("OneVsAll...")

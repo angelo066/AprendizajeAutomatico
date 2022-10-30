@@ -39,7 +39,12 @@ def cost(theta1, theta2, X, y, lambda_):
     log_cost = np.log(fun_val)
     log_cost2 = np.log(1 - fun_val)
     J += np.sum((-y * log_cost) -  (1 - y) * log_cost2)
-    return J / m
+
+    J = J /m
+
+    reg_tem = lambda_/(2*m) * ((theta1[1:, 1:]** 2).sum() + (theta2[1:, 1:]** 2).sum() )
+
+    return J + reg_tem
 
 
 
