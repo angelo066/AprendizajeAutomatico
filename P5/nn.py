@@ -2,7 +2,6 @@ import numpy as np
 import multiClass as mC
 import logisticReg as lr
 
-
 def cost(theta1, theta2, X, y, lambda_):
     """
     Compute cost for 2-layer neural network. 
@@ -49,10 +48,6 @@ def cost(theta1, theta2, X, y, lambda_):
 
     return J + reg_tem
 
-def g_dev(z, a): 
-    a * (np.ones(a.shape[0]) - a)
-
-
 def backprop(theta1, theta2, X, y, lambda_):
     """
     Compute cost and gradient for 2-layer neural network. 
@@ -93,35 +88,46 @@ def backprop(theta1, theta2, X, y, lambda_):
         It has shape (output layer size x 2nd hidden layer size + 1)
 
     """
-    
+
+    grad1 = grad2 = 0
+
     m = X.shape[0]
-    #Input matrix
-    a1 = np.c_[np.ones(m), X]
-    #First layer
-    z2 = np.dot(theta1, a1.T)
-    #Sigmoid of first multiplication
-    a2 = lr.sigmoid(z2)
-    #new input
-    a2 = np.c_[np.ones(len(a2[0])), a2.T]
-    #second layer
-    z3 = np.dot(theta2, a2.T) #-> a4
-    #output
-    a3 = lr.sigmoid(z3)
-    
-    a3 = a3
-    
-    J = 0
 
-    grad1 = 0
-    grad2 = 0
+    J = cost(theta1, theta2,X, y, lambda_)
 
-    
-    error_3 = a3.T - y
-
-    weight_error = theta2.T @ error_3.T
-    error_2 = weight_error * g_dev(z3, a3)
-
-    print(error_2)
+    X = np.c_[np.ones(m), X]
+    for i in range(m):
+        #FEED PROPAGATION
+        #Input matrix
+        # a1 = np.c_[np.ones(X[i].shape[0]), X[i]]
+        a1 =  X[i]
+        #First layer
+        z2 = np.dot(theta1, a1.T)
+        #Sigmoid of first multiplication
+        a2 = lr.sigmoid(z2)
+        #new input
+        a2 = np.insert(a2, 0, 1)
+        # a2 = np.c_[np.ones(len(a2[0])), a2.T]
+        #second layer
+        z3 = np.dot(theta2, a2.T) #-> a4
+        #output
+        a3 = lr.sigmoid(z3)
+        #FEED PROPAGATION
+        #===================================================================================================
+        #BACK PROPAGATION
+        error_3 = a3 - y[i]
+        g_primeZ = a2 * (np.ones(a2.shape)- a2)
+        # print(g_primeZ.shape)
+        error_2 = np.dot(theta2.T,error_3) * g_primeZ.T
+        # print(error_2.shape)
+        error_2 = error_2[1:]
+        
+        # print(a1.shape)
+        error_2 = np.reshape(error_2.shape[0], 1)
+        print(error_2.shape[0])
+        grad1 = grad1 + np.dot(error_2, a1.T)
+        grad2 = grad2 + np.dot(error_3, a2.T) 
+        #BACK PROPAGATION
 
     return (J, grad1, grad2)
 
