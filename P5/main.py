@@ -60,8 +60,8 @@ def our_test_A():
     # cost = neuralNet.cost(theta1, theta2,X, Y, lambda_)
     # print(cost)
     # print(X.shape)    
-    neuralNet.backprop(theta1, theta2,X, Y, lambda_)
-    # utils.checkNNGradients(neuralNet.backprop)
+    # neuralNet.backprop(theta1, theta2,X, Y, lambda_)
+    utils.checkNNGradients(neuralNet.backprop)
     # When n=2
 
     # n_label = 10

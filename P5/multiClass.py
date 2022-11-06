@@ -126,4 +126,4 @@ def predict(theta1, theta2, X):
     a3 = lr.sigmoid(z3)
 
     #Final output
-    return a3.T
+    return a3.T, a2, a1

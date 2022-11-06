@@ -35,7 +35,7 @@ def cost(theta1, theta2, X, y, lambda_):
     J = 0
     m = y.shape[0]
 
-    h0 = mC.predict(theta1, theta2, X)
+    h0 = mC.predict(theta1, theta2, X)[0]
     fun_val = h0
 
     log_cost = np.log(fun_val)
@@ -88,46 +88,29 @@ def backprop(theta1, theta2, X, y, lambda_):
         It has shape (output layer size x 2nd hidden layer size + 1)
 
     """
-
     grad1 = grad2 = 0
 
     m = X.shape[0]
 
     J = cost(theta1, theta2,X, y, lambda_)
 
-    X = np.c_[np.ones(m), X]
+    a3, a2, a1 = mC.predict(theta1, theta2, X)
+
     for i in range(m):
-        #FEED PROPAGATION
-        #Input matrix
-        # a1 = np.c_[np.ones(X[i].shape[0]), X[i]]
-        a1 =  X[i]
-        #First layer
-        z2 = np.dot(theta1, a1.T)
-        #Sigmoid of first multiplication
-        a2 = lr.sigmoid(z2)
-        #new input
-        a2 = np.insert(a2, 0, 1)
-        # a2 = np.c_[np.ones(len(a2[0])), a2.T]
-        #second layer
-        z3 = np.dot(theta2, a2.T) #-> a4
-        #output
-        a3 = lr.sigmoid(z3)
-        #FEED PROPAGATION
-        #===================================================================================================
-        #BACK PROPAGATION
-        error_3 = a3 - y[i]
-        g_primeZ = a2 * (np.ones(a2.shape)- a2)
-        # print(g_primeZ.shape)
+        error_3 = a3[i] - y[i]
+        g_primeZ = a2[i] * (np.ones(a2[i].shape)- a2[i])
+
         error_2 = np.dot(theta2.T,error_3) * g_primeZ.T
-        # print(error_2.shape)
-        error_2 = error_2[1:]
+        error_2 = error_2[1:] #eliminar primera columna
         
-        # print(a1.shape)
-        error_2 = np.reshape(error_2.shape[0], 1)
-        print(error_2.shape[0])
-        grad1 = grad1 + np.dot(error_2, a1.T)
-        grad2 = grad2 + np.dot(error_3, a2.T) 
-        #BACK PROPAGATION
+        grad1 = grad1 + np.matmul(error_2[:, np.newaxis], a1[i][np.newaxis, :])
+        grad2 = grad2 + np.matmul(error_3[:, np.newaxis], a2[i][np.newaxis, :])
+
+    grad1[:, 1:] = (1/m) * grad1[:,1:] + lambda_*theta1[:, 1:]
+    grad1[:, 0] = (1/m) * grad1[:, 0]
+
+    grad2[:, 1:] = (1/m) * grad2[:,1:] + lambda_*theta2[:, 1:]
+    grad2[:, 0] = (1/m) * grad2[:, 0]
 
     return (J, grad1, grad2)
 
