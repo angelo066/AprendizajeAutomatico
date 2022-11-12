@@ -1,19 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
-# import utils as utils
 from scipy.io import loadmat
+from scipy.optimize import minimize
 
 import nn as neuralNet
 import utils
-import logisticReg as lr
-# import public_tests as test
+import multiClass as mC
 
-# def public_Test():
-#     test.sigmoid_test(lr.sigmoid)
-#     test.compute_cost_test(lr.compute_cost)
-#     test.compute_gradient_test(lr.compute_gradient)
-#     test.compute_cost_reg_test(lr.compute_cost_reg)
-#     test.compute_gradient_reg_test(lr.compute_gradient_reg)
+def public_Test(X, Y, lambda_):
+    # weights = loadmat('data/ex3weights.mat')
+    # theta1, theta2 = weights['Theta1'], weights['Theta2']
+    # cost = neuralNet.cost(theta1, theta2,X, Y, lambda_)
+    # print("Cost: " + cost)
+
+    utils.checkNNGradients(neuralNet.backprop, lambda_)
 
 def show_samples():
     X , Y = readData("ex3data1.mat")
@@ -48,20 +48,44 @@ def encodeY(Y, labels):
 
     return newY
 
+def initiTheta(X, Y, eInit):
+    layers_size = 25
+    theta1 = np.random.uniform(low= -eInit, high= eInit, size=(layers_size,X.shape[1] + 1))
+    theta2 = np.random.uniform(low= -eInit, high= eInit, size=(Y.shape[1],layers_size + 1))
+
+    return theta1, theta2
+
+def learningParameters(X, Y, Y_encoded, lambda_, alpha, iterations):
+    theta1, theta2 = initiTheta(X, Y_encoded, 0.12)
+    LearnedTheta1, LearnedTheta2_, cost = neuralNet.gradient_descent(X, Y_encoded, theta1, theta2, neuralNet.backprop, alpha, iterations, lambda_)
+
+    result = mC.predict(LearnedTheta1, LearnedTheta2_, X)[3]
+
+    percentage = compareEquals(Y, result)
+    
+    print(f"Precision: {percentage}%")
+
+def learnParametersSciPy(X, Y, Y_encoded):
+    theta1, theta2 = initiTheta(X, Y_encoded, 0.12)
+
+    result = minimize(fun= neuralNet.backprop, x0= theta1, method='TNC', jac=True, options={'maxiter': 100})
+    # print(cost(result.x))
+
 def our_test_A():
     X , Y = readData("ex3data1.mat")
 
-    Y = encodeY(Y, 10)
-
-    weights = loadmat('data/ex3weights.mat')
-    theta1, theta2 = weights['Theta1'], weights['Theta2']
+    Y_encoded = encodeY(Y, 10)
 
     lambda_ = 1
-    # cost = neuralNet.cost(theta1, theta2,X, Y, lambda_)
-    # print(cost)
+    alpha = 1
+    iterations = 100
+    # public_Test(X, Y, lambda_)
+    learningParameters(X, Y, Y_encoded, lambda_, alpha, iterations)
+
+
+
     # print(X.shape)    
     # neuralNet.backprop(theta1, theta2,X, Y, lambda_)
-    utils.checkNNGradients(neuralNet.backprop)
     # When n=2
 
     # n_label = 10

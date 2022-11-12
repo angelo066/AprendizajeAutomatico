@@ -1,6 +1,7 @@
 import numpy as np
 import multiClass as mC
 import logisticReg as lr
+import copy
 
 def cost(theta1, theta2, X, y, lambda_):
     """
@@ -44,7 +45,7 @@ def cost(theta1, theta2, X, y, lambda_):
 
     J = J /m
 
-    reg_tem = lambda_/(2*m) * ((theta1[1:, 1:]** 2).sum() + (theta2[1:, 1:]** 2).sum() )
+    reg_tem = lambda_/(2*m) * (np.sum(theta1[:, 1:]** 2) + np.sum(theta2[:, 1:]** 2) )
 
     return J + reg_tem
 
@@ -94,7 +95,7 @@ def backprop(theta1, theta2, X, y, lambda_):
 
     J = cost(theta1, theta2,X, y, lambda_)
 
-    a3, a2, a1 = mC.predict(theta1, theta2, X)
+    a3, a2, a1, p = mC.predict(theta1, theta2, X)
 
     for i in range(m):
         error_3 = a3[i] - y[i]
@@ -106,11 +107,26 @@ def backprop(theta1, theta2, X, y, lambda_):
         grad1 = grad1 + np.matmul(error_2[:, np.newaxis], a1[i][np.newaxis, :])
         grad2 = grad2 + np.matmul(error_3[:, np.newaxis], a2[i][np.newaxis, :])
 
-    grad1[:, 1:] = (1/m) * grad1[:,1:] + lambda_*theta1[:, 1:]
+    grad1[:, 1:] = (1/m) * grad1[:,1:] + (1/m)*lambda_*theta1[:, 1:]
     grad1[:, 0] = (1/m) * grad1[:, 0]
 
-    grad2[:, 1:] = (1/m) * grad2[:,1:] + lambda_*theta2[:, 1:]
+    grad2[:, 1:] = (1/m) * grad2[:,1:] + (1/m)*lambda_*theta2[:, 1:]
     grad2[:, 0] = (1/m) * grad2[:, 0]
 
     return (J, grad1, grad2)
 
+
+def gradient_descent(X, y, theta1_in, theta2_in, gradient_function, alpha, num_iters, lambda_=None):
+    J_history = []
+    theta1 = copy.deepcopy(theta1_in)
+    theta2 = theta2_in
+    
+    for i in range(num_iters):
+      cost, dj_dj1, dj_dj2 = gradient_function(theta1, theta2, X, y,lambda_)
+      theta1 -= alpha * dj_dj1
+      theta2 -= alpha * dj_dj2
+
+      if i < 100000:
+        J_history.append(cost)
+
+    return theta1, theta2, J_history
