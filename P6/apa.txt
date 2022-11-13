@@ -1,0 +1,29 @@
+poly = PolynomialFeatures(degree)
+XtrainMapped = poly.fit_Transform(XTrain) # entrena X
+
+scaler = StandardScaler() # normalizacion
+XtrainMappedScaled = scaler.fit_transform(xTrainMapped)
+
+#Descenso grad
+linear_model = LinearRegression()
+linearmodel.fit(XtrainedMappedScaled, y_train)
+
+# prediccion -> se pasa ply y sacaler para que aplique las transformaciones
+yhat = predict(X_train, poly, scaled, linear_model)
+
+__________________________________________
+
+
+#Lo mismo pero regularizado
+poly = PolynomialFeatures(degree)
+XtrainMapped = poly.fit_Transform(XTrain) # entrena X
+
+scaler = StandardScaler() # normalizacion
+XtrainMappedScaled = scaler.fit_transform(xTrainMapped)
+
+#Descenso grad
+linear_model = Ridge(alpha=lambda)
+linearmodel.fit(XtrainedMappedScaled, y_train)
+
+# prediccion -> se pasa ply y sacaler para que aplique las transformaciones
+yhat = predict(X_train, poly, scaled, linear_model)

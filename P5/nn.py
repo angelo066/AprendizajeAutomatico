@@ -36,7 +36,7 @@ def cost(theta1, theta2, X, y, lambda_):
     J = 0
     m = y.shape[0]
 
-    h0 = mC.predict(theta1, theta2, X)[0]
+    h0 = mC.feedForward(theta1, theta2, X)[0]
     fun_val = h0
 
     log_cost = np.log(fun_val)
@@ -95,7 +95,7 @@ def backprop(theta1, theta2, X, y, lambda_):
 
     J = cost(theta1, theta2,X, y, lambda_)
 
-    a3, a2, a1, p = mC.predict(theta1, theta2, X)
+    a3, a2, a1, p = mC.feedForward(theta1, theta2, X)
 
     for i in range(m):
         error_3 = a3[i] - y[i]
@@ -104,8 +104,8 @@ def backprop(theta1, theta2, X, y, lambda_):
         error_2 = np.dot(theta2.T,error_3) * g_primeZ.T
         error_2 = error_2[1:] #eliminar primera columna
         
-        grad1 = grad1 + np.matmul(error_2[:, np.newaxis], a1[i][np.newaxis, :])
-        grad2 = grad2 + np.matmul(error_3[:, np.newaxis], a2[i][np.newaxis, :])
+        grad1 += np.matmul(error_2[:, np.newaxis], a1[i][np.newaxis, :])
+        grad2 += np.matmul(error_3[:, np.newaxis], a2[i][np.newaxis, :])
 
     grad1[:, 1:] = (1/m) * grad1[:,1:] + (1/m)*lambda_*theta1[:, 1:]
     grad1[:, 0] = (1/m) * grad1[:, 0]

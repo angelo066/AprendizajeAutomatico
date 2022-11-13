@@ -59,7 +59,7 @@ def learningParameters(X, Y, Y_encoded, lambda_, alpha, iterations):
     theta1, theta2 = initiTheta(X, Y_encoded, 0.12)
     LearnedTheta1, LearnedTheta2_, cost = neuralNet.gradient_descent(X, Y_encoded, theta1, theta2, neuralNet.backprop, alpha, iterations, lambda_)
 
-    result = mC.predict(LearnedTheta1, LearnedTheta2_, X)[3]
+    result = mC.feedForward(LearnedTheta1, LearnedTheta2_, X)[3]
 
     percentage = compareEquals(Y, result)
     
@@ -78,29 +78,9 @@ def our_test_A():
 
     lambda_ = 1
     alpha = 1
-    iterations = 100
+    iterations = 1000
     # public_Test(X, Y, lambda_)
     learningParameters(X, Y, Y_encoded, lambda_, alpha, iterations)
-
-
-
-    # print(X.shape)    
-    # neuralNet.backprop(theta1, theta2,X, Y, lambda_)
-    # When n=2
-
-    # n_label = 10
-    # alpha = 0.001
-    # print("OneVsAll...")
-    # all_theta = mC.oneVsAll(X, Y, n_label, alpha)
-    # # print(all_theta)
-    # print("Predicting...")
-    # p = mC.predictOneVsAll(all_theta, X)
-    
-    # percentage = compareEquals(Y, p)
-    
-    # print(f"A: {percentage}%")
-
-
 
 def main():
     # show_samples()

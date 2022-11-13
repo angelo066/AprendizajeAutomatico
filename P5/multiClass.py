@@ -110,7 +110,7 @@ def predictOneVsAll(all_theta, X):
 #########################################################################
 # NN
 #
-def predict(theta1, theta2, X):
+def feedForward(theta1, theta2, X):
     m = X.shape[0]
     #Input matrix
     a1 = np.c_[np.ones(m), X]
