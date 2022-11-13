@@ -18,15 +18,15 @@ def gen_data(m, seed=1, scale=0.7):
 def predict(X_train, polynomialInstance, scaleInstance, linearRegInstance):
     xTrainMapped = polynomialInstance.fit_transform(X_train)
     XtrainMappedScaled = scaleInstance.fit_transform(xTrainMapped)
-    linearRegInstance.predict(X_train)
+    return linearRegInstance.predict(XtrainMappedScaled)
 
 def calcError(X, Y, poly, scaler, linearModel):
     m = Y.shape[0]
 
     error = 0
+    yhat =  predict(X, poly, scaler, linearModel)
     for i in range(m):
-        yhat =  predict(X, poly, scaler, linearModel)
-        error += ((yhat - Y[i]) ** 2) / (2 * m ) 
+        error += ((yhat[i] - Y[i]) ** 2) / (2 * m ) 
 
     return error
 
@@ -42,9 +42,9 @@ def sobreAjuste(degree, XTrain, y_train, XTest, y_test):
 
     #Datos de entrenamiento
     train = calcError(XTrain, y_train, poly, scaler, linear_model)
-    print("Train:" + train)
+    print("Train:" + str(train))
     test = calcError(XTest, y_test, poly, scaler, linear_model)
-    print("test:" + test)
+    print("Test:" + str(test))
 
 
 def main():
