@@ -31,7 +31,7 @@ def calcError(X, Y, poly, scaler, linearModel):
 
     return error / (2 * m ), yhat 
 
-def sobreAjuste(degree, XTrain, y_train, XTest, y_test):
+def trainPolinomic(degree, XTrain, y_train):
     poly = PolynomialFeatures(degree, include_bias=False)
     xTrainMapped = poly.fit_transform(XTrain) # entrena X
 
@@ -41,28 +41,31 @@ def sobreAjuste(degree, XTrain, y_train, XTest, y_test):
     linear_model = LinearRegression()
     linear_model.fit(XtrainMappedScaled, y_train)
 
-    #Datos de entrenamiento
-    train, yTrainPredicted = calcError(XTrain, y_train, poly, scaler, linear_model)
-    print("Train:" + str(train))
-    test , yTestPredicted = calcError(XTest, y_test, poly, scaler, linear_model)
-    print("Test:" + str(test))
-
-    return yTrainPredicted , yTestPredicted
+    return poly, scaler, linear_model
 
 def overFit(X, Y):
     #train -> 67% 
     #test -> 33%
-
     X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
                                                         test_size=0.33, random_state= 1) 
     X_trainData_matrix = X_trainData[:, None]
     X_testData_matrix = X_testData[:, None]
 
-    yTrainPredict , yTestPredict = sobreAjuste(15, X_trainData_matrix, Y_trainData, X_testData_matrix, Y_testData)
+    poly, scaler, linear_model = trainPolinomic(15, X_trainData_matrix, Y_trainData)
+
+    #Calculamos errores    
+    train, yTrainPredict = calcError(X_trainData_matrix, Y_trainData, poly, scaler, linear_model)
+    print("Train:" + str(train))
+    test , yTestPredict = calcError(X_testData_matrix, Y_testData, poly, scaler, linear_model)
+    print("Test:" + str(test))
+
+    #Todos los ejemplos
+    # XData_ = np.sort(np.concatenate((X_trainData, X_testData) ,axis=None)) 
+    # YData = np.sort(np.concatenate((yTrainPredict, yTestPredict) ,axis=None))
     
-    #Juntamos y ordenamos
-    # np.concatenate((X_trainData, X_testData)
-    XData_ = np.sort(X_trainData ,axis=None)
+    #ordenamos
+    #Datos entrenamiento
+    XData_ = np.sort(X_trainData,axis=None)
     YData = np.sort(yTrainPredict ,axis=None)
     plt.plot(XData_, YData, c = 'red', label = 'predicted')
 
@@ -77,10 +80,31 @@ def optimumDegree(X, Y):
     X_validateData, X_testData, Y_validateData, Y_testData = train_test_split(X_testData, Y_testData, 
                                                         test_size=0.5, random_state= 1)
 
-    print(X_trainData.shape)
-    print(X_testData.shape)
-    print(X_validateData.shape)
-                        
+    X_trainData_matrix = X_trainData[:, None]
+    X_testData_matrix = X_testData[:, None]
+    X_validateData_matrix = X_validateData[:, None]
+
+    optimumDegree = None
+    minErrorValidate = float('inf')
+    for i in range(1,11):
+        poly, scaler, linear_model = trainPolinomic(i, X_trainData_matrix, Y_trainData)
+        
+        error = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)[0]
+        # print(f"Validate {i} :" + str(error))
+        if(error < minErrorValidate):
+            minErrorValidate = error
+            optimumDegree = i
+
+    print(f"Optimum degree is {optimumDegree}")
+
+    poly, scaler, linear_model = trainPolinomic(optimumDegree, X_trainData_matrix, Y_trainData)
+        
+    error, yValidatePredict = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)
+
+    XData_ = np.sort(X_validateData,axis=None)
+    YData = np.sort(yValidatePredict ,axis=None)
+    plt.plot(XData_, YData, c = 'blue', label = 'predicted')
+
 
 def main():
     x_train, y_train, x_ideal, y_ideal = gen_data(64)
@@ -88,9 +112,8 @@ def main():
     plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
     plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o')
 
-
-    overFit(x_train, y_train)
-    # optimumDegree(x_train, y_train)
+    # overFit(x_train, y_train)
+    optimumDegree(x_train, y_train)
 
     plt.legend()
     plt.show()
