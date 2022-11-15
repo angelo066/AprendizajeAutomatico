@@ -49,14 +49,11 @@ def sobreAjuste(degree, XTrain, y_train, XTest, y_test):
 
     return yTrainPredicted , yTestPredicted
 
+def overFit(X, Y):
+    #train -> 67% 
+    #test -> 33%
 
-def main():
-    x_train, y_train, x_ideal, y_ideal = gen_data(64)
-    plt.figure()
-    plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
-    plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o')
-
-    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(x_train, y_train, 
+    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
                                                         test_size=0.33, random_state= 1) 
     X_trainData_matrix = X_trainData[:, None]
     X_testData_matrix = X_testData[:, None]
@@ -67,8 +64,34 @@ def main():
     # np.concatenate((X_trainData, X_testData)
     XData_ = np.sort(X_trainData ,axis=None)
     YData = np.sort(yTrainPredict ,axis=None)
-
     plt.plot(XData_, YData, c = 'red', label = 'predicted')
+
+
+def optimumDegree(X, Y):
+    #train  -> 60%
+    #validacion  -> 20%
+    #test  -> 20%
+    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
+                                                        test_size=0.4, random_state= 1)
+
+    X_validateData, X_testData, Y_validateData, Y_testData = train_test_split(X_testData, Y_testData, 
+                                                        test_size=0.5, random_state= 1)
+
+    print(X_trainData.shape)
+    print(X_testData.shape)
+    print(X_validateData.shape)
+                        
+
+def main():
+    x_train, y_train, x_ideal, y_ideal = gen_data(64)
+    plt.figure()
+    plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
+    plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o')
+
+
+    overFit(x_train, y_train)
+    # optimumDegree(x_train, y_train)
+
     plt.legend()
     plt.show()
     # show_samples()
