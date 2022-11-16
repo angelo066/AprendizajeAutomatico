@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 from sklearn.model_selection import train_test_split
 from scipy.interpolate import make_interp_spline
 
@@ -43,6 +44,18 @@ def trainPolinomic(degree, XTrain, y_train):
 
     return poly, scaler, linear_model
 
+def trainPolinomicRegularized(degree, XTrain, y_train,lambda_):
+    poly = PolynomialFeatures(degree, include_bias=False)
+    xTrainMapped = poly.fit_transform(XTrain) # entrena X
+
+    scaler = StandardScaler() # normalizacion
+    XtrainMappedScaled = scaler.fit_transform(xTrainMapped)
+
+    linear_model = Ridge(lambda_)
+    linear_model.fit(XtrainMappedScaled, y_train)
+
+    return poly, scaler, linear_model
+
 def overFit(X, Y):
     #train -> 67% 
     #test -> 33%
@@ -68,7 +81,6 @@ def overFit(X, Y):
     XData_ = np.sort(X_trainData,axis=None)
     YData = np.sort(yTrainPredict ,axis=None)
     plt.plot(XData_, YData, c = 'red', label = 'predicted')
-
 
 def optimumDegree(X, Y):
     #train  -> 60%
@@ -105,15 +117,72 @@ def optimumDegree(X, Y):
     YData = np.sort(yValidatePredict ,axis=None)
     plt.plot(XData_, YData, c = 'blue', label = 'predicted')
 
-
-def main():
-    x_train, y_train, x_ideal, y_ideal = gen_data(64)
+def electHiperParameter():
+    x_train, y_train, x_ideal, y_ideal = gen_data(750)
     plt.figure()
     plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
     plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o')
 
+    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(x_train, y_train, 
+                                                        test_size=0.4, random_state= 1)
+
+    X_validateData, X_testData, Y_validateData, Y_testData = train_test_split(X_testData, Y_testData, 
+                                                        test_size=0.5, random_state= 1)
+
+    X_trainData_matrix = X_trainData[:, None]
+    X_testData_matrix = X_testData[:, None]
+    X_validateData_matrix = X_validateData[:, None]
+
+def OverfitRegularized(X, Y):
+    #train  -> 60%
+    #validacion  -> 20%
+    #test  -> 20%
+    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
+                                                        test_size=0.4, random_state= 1)
+
+    X_validateData, X_testData, Y_validateData, Y_testData = train_test_split(X_testData, Y_testData, 
+                                                        test_size=0.5, random_state= 1)
+
+    X_trainData_matrix = X_trainData[:, None]
+    X_testData_matrix = X_testData[:, None]
+    X_validateData_matrix = X_validateData[:, None]
+
+    RegularizerLambdas =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-2, 1, 10, 100, 300, 600, 900]
+    optimumLambda = None
+    minErrorValidate = float('inf')
+    for i in range(len(RegularizerLambdas)):
+        poly, scaler, linear_model = trainPolinomicRegularized(15, X_trainData_matrix, Y_trainData, RegularizerLambdas[i])
+        
+        error = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)[0]
+        # print(f"Validate {i} :" + str(error))
+        if(error < minErrorValidate):
+            minErrorValidate = error
+            optimumLambda = i
+
+    print(f"Optimum lambda is {RegularizerLambdas[optimumLambda]}")
+
+    poly, scaler, linear_model = trainPolinomicRegularized(optimumLambda, X_trainData_matrix, Y_trainData, RegularizerLambdas[optimumLambda])
+        
+    error, yValidatePredict = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)
+
+    XData_ = np.sort(X_validateData,axis=None)
+    YData = np.sort(yValidatePredict ,axis=None)
+    plt.plot(XData_, YData, c = 'blue', label = 'predicted')
+
+
+def overFitAndOptimumDegreeAndRegularized():
+    x_train, y_train, x_ideal, y_ideal = gen_data(64)
+    plt.figure()
+    plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
+    plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o', s = 10)
+
     # overFit(x_train, y_train)
-    optimumDegree(x_train, y_train)
+    # optimumDegree(x_train, y_train)
+    OverfitRegularized(x_train, y_train)
+
+def main():
+    overFitAndOptimumDegreeAndRegularized()
+    # electHiperParameter()
 
     plt.legend()
     plt.show()
