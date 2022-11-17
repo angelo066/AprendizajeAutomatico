@@ -236,11 +236,11 @@ def Train(X, Y):
 def learningCurves():
     min  = 50
     max = 1001
-    X = np.arange(min, max)
+    X = np.arange(min, max, 50)
     Y_errorV = []
     Y_errorT = []
-    for i in range(min, max):
-        x_train, y_train, x_ideal, y_ideal = gen_data(i)
+    for i in range(X.shape[0]):
+        x_train, y_train, x_ideal, y_ideal = gen_data(X[i])
         errorTrain, errorValide = Train(x_train, y_train)
         Y_errorT.append(errorTrain)
         Y_errorV.append(errorValide)
@@ -248,8 +248,9 @@ def learningCurves():
         print(f"Error errorValidate : {errorValide}")
         print("====================")
 
-    plt.plot(X, Y_errorT, c = 'blue', label = 'train error')
-    plt.plot(X, Y_errorV, c = 'orange', label = 'cv error')
+    width = 3
+    plt.plot(X, Y_errorV, c = 'dodgerblue', label = 'cv error', linewidth=width)
+    plt.plot(X, Y_errorT, c = 'orange', label = 'train error', linewidth=width)
     # print(Y_errorT)
 
     plt.xlabel("Number of Examples (m)")

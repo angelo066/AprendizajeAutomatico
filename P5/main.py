@@ -48,7 +48,7 @@ def encodeY(Y, labels):
 
     return newY
 
-def initiTheta(X, Y, eInit):
+def initTheta(X, Y, eInit):
     layers_size = 25
     theta1 = np.random.uniform(low= -eInit, high= eInit, size=(layers_size,X.shape[1] + 1))
     theta2 = np.random.uniform(low= -eInit, high= eInit, size=(Y.shape[1],layers_size + 1))
@@ -56,7 +56,7 @@ def initiTheta(X, Y, eInit):
     return theta1, theta2
 
 def learningParameters(X, Y, Y_encoded, lambda_, alpha, iterations):
-    theta1, theta2 = initiTheta(X, Y_encoded, 0.12)
+    theta1, theta2 = initTheta(X, Y_encoded, 0.12)
     LearnedTheta1, LearnedTheta2_, cost = neuralNet.gradient_descent(X, Y_encoded, theta1, theta2, neuralNet.backprop, alpha, iterations, lambda_)
 
     result = mC.feedForward(LearnedTheta1, LearnedTheta2_, X)[3]
@@ -65,11 +65,34 @@ def learningParameters(X, Y, Y_encoded, lambda_, alpha, iterations):
     
     print(f"Precision: {percentage}%")
 
-def learnParametersSciPy(X, Y, Y_encoded):
-    theta1, theta2 = initiTheta(X, Y_encoded, 0.12)
+def backpropAuxForMinimize(thetas, layers, X, Y, lambda_):
+    m = Y.shape[1]
+    n = X.shape[1]
 
-    result = minimize(fun= neuralNet.backprop, x0= theta1, method='TNC', jac=True, options={'maxiter': 100})
-    # print(cost(result.x))
+    theta1 = np.reshape(thetas[:layers * (n+1)], (layers, n+1))
+    theta2 = np.reshape(thetas[layers * (n+1):], (m, layers+1))
+
+    J, grad1, grad2 = neuralNet.backprop(theta1, theta2, X, Y, lambda_)
+
+    return J , np.concatenate([np.ravel(grad1), np.ravel(grad2)])
+
+def learnParametersSciPy(X, Y, Y_encoded, lambda_, num_iters):
+    theta1, theta2 = initTheta(X, Y_encoded, 0.12)
+
+    layers = 25
+    m = Y_encoded.shape[1]
+    n = X.shape[1]
+
+    thetas = np.concatenate([theta1.ravel(), theta2.ravel()])
+
+    result = minimize(fun=backpropAuxForMinimize, x0=thetas, args=(layers, X, Y_encoded, lambda_), method='TNC', jac=True, options={'maxiter': num_iters})
+
+    theta1 = np.reshape(result.x[:layers * (n+1)], (layers, n+1))
+    theta2 = np.reshape(result.x[layers * (n+1):], (m, layers+1))
+
+    result = mC.feedForward(theta1, theta2, X)[3]
+    percentage = compareEquals(Y, result)
+    print(f"Precision: {percentage}%")
 
 def our_test_A():
     X , Y = readData("ex3data1.mat")
@@ -78,9 +101,9 @@ def our_test_A():
 
     lambda_ = 1
     alpha = 1
-    iterations = 1000
     # public_Test(X, Y, lambda_)
-    learningParameters(X, Y, Y_encoded, lambda_, alpha, iterations)
+    # learningParameters(X, Y, Y_encoded, lambda_, alpha, 1000)
+    learnParametersSciPy(X, Y, Y_encoded, lambda_, 100) #con 1000 da una precision de 99.64%
 
 def main():
     # show_samples()
