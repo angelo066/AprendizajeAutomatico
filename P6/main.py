@@ -244,6 +244,9 @@ def learningCurves():
         errorTrain, errorValide = Train(x_train, y_train)
         Y_errorT.append(errorTrain)
         Y_errorV.append(errorValide)
+        print(f"Error Train: {errorTrain}")
+        print(f"Error errorValidate : {errorValide}")
+        print("====================")
 
     plt.plot(X, Y_errorT, c = 'blue', label = 'train error')
     plt.plot(X, Y_errorV, c = 'orange', label = 'cv error')
