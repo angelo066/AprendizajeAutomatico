@@ -110,7 +110,9 @@ def optimumDegree(X, Y):
     print(f"Optimum degree is {optimumDegree}")
 
     poly, scaler, linear_model = trainPolinomic(optimumDegree, X_trainData_matrix, Y_trainData)
-        
+    
+    #deberiamos calcular el error real con los de test, y no con los de validacion ya que ese ya lo sabemos(es el menor).
+    #Y hacer la grafica con los datos de entrenamiento. Los de test es solo para comprobar que el de validacion esta bien
     error, yValidatePredict = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)
 
     XData_ = np.sort(X_validateData,axis=None)
@@ -121,9 +123,15 @@ def electHiperParameter():
     x_train, y_train, x_ideal, y_ideal = gen_data(750)
     plt.figure()
     plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
-    plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o')
+    plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o', s = 2)
 
-    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(x_train, y_train, 
+    searchDegreeAndLambda(x_train, y_train)
+
+def searchDegreeAndLambda(X, Y):
+    #train  -> 60%
+    #validacion  -> 20%
+    #test  -> 20%
+    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
                                                         test_size=0.4, random_state= 1)
 
     X_validateData, X_testData, Y_validateData, Y_testData = train_test_split(X_testData, Y_testData, 
@@ -132,6 +140,34 @@ def electHiperParameter():
     X_trainData_matrix = X_trainData[:, None]
     X_testData_matrix = X_testData[:, None]
     X_validateData_matrix = X_validateData[:, None]
+
+    RegularizerLambdas =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-2, 1, 10, 100, 300, 600, 900]
+    optimumLambda = None
+    optimumDegree = None
+    minErrorValidate = float('inf')
+
+
+    for i in range(1,11):
+        for j in range(len(RegularizerLambdas)):
+            poly, scaler, linear_model = trainPolinomicRegularized(i, X_trainData_matrix, Y_trainData, RegularizerLambdas[j])
+            
+            error = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)[0]
+            # print(f"Validate {i} :" + str(error))
+            if(error < minErrorValidate):
+                minErrorValidate = error
+                optimumDegree = i
+                optimumLambda = j
+
+    print(f"Optimum degree and lambda are [degree:{optimumDegree} ,lambda: {RegularizerLambdas[optimumLambda]}")
+
+    poly, scaler, linear_model = trainPolinomicRegularized(optimumDegree, X_trainData_matrix, Y_trainData, RegularizerLambdas[optimumLambda])
+        
+    error, yValidatePredict = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)
+
+    print(f"Which error is: {error}]")
+    XData_ = np.sort(X_validateData,axis=None)
+    YData = np.sort(yValidatePredict ,axis=None)
+    plt.plot(XData_, YData, c = 'blue', label = 'predicted')
 
 def OverfitRegularized(X, Y):
     #train  -> 60%
@@ -161,14 +197,13 @@ def OverfitRegularized(X, Y):
 
     print(f"Optimum lambda is {RegularizerLambdas[optimumLambda]}")
 
-    poly, scaler, linear_model = trainPolinomicRegularized(optimumLambda, X_trainData_matrix, Y_trainData, RegularizerLambdas[optimumLambda])
+    poly, scaler, linear_model = trainPolinomicRegularized(15, X_trainData_matrix, Y_trainData, RegularizerLambdas[optimumLambda])
         
     error, yValidatePredict = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)
 
     XData_ = np.sort(X_validateData,axis=None)
     YData = np.sort(yValidatePredict ,axis=None)
     plt.plot(XData_, YData, c = 'blue', label = 'predicted')
-
 
 def overFitAndOptimumDegreeAndRegularized():
     x_train, y_train, x_ideal, y_ideal = gen_data(64)
@@ -180,9 +215,47 @@ def overFitAndOptimumDegreeAndRegularized():
     # optimumDegree(x_train, y_train)
     OverfitRegularized(x_train, y_train)
 
+def Train(X, Y):
+    X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
+                                                        test_size=0.4, random_state= 1)
+
+    X_validateData, X_testData, Y_validateData, Y_testData = train_test_split(X_testData, Y_testData, 
+                                                        test_size=0.5, random_state= 1)
+
+    X_trainData_matrix = X_trainData[:, None]
+    X_testData_matrix = X_testData[:, None]
+    X_validateData_matrix = X_validateData[:, None]
+
+    poly, scaler, linear_model = trainPolinomic(16, X_trainData_matrix, Y_trainData)
+        
+    errorValidate = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)[0]
+    errorTrain = calcError(X_trainData_matrix, Y_trainData, poly, scaler, linear_model)[0]
+    
+    return errorValidate, errorTrain
+
+def learningCurves():
+    min  = 50
+    max = 1001
+    X = np.arange(min, max)
+    Y_errorV = []
+    Y_errorT = []
+    for i in range(min, max):
+        x_train, y_train, x_ideal, y_ideal = gen_data(i)
+        errorTrain, errorValide = Train(x_train, y_train)
+        Y_errorT.append(errorTrain)
+        Y_errorV.append(errorValide)
+
+    plt.plot(X, Y_errorT, c = 'blue', label = 'train error')
+    plt.plot(X, Y_errorV, c = 'orange', label = 'cv error')
+    # print(Y_errorT)
+
+    plt.xlabel("Number of Examples (m)")
+    plt.ylabel("error")
+
 def main():
-    overFitAndOptimumDegreeAndRegularized()
+    # overFitAndOptimumDegreeAndRegularized()
     # electHiperParameter()
+    learningCurves()
 
     plt.legend()
     plt.show()
