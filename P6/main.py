@@ -211,9 +211,9 @@ def overFitAndOptimumDegreeAndRegularized():
     plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
     plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o', s = 10)
 
-    # overFit(x_train, y_train)
+    overFit(x_train, y_train)
     # optimumDegree(x_train, y_train)
-    OverfitRegularized(x_train, y_train)
+    # OverfitRegularized(x_train, y_train)
 
 def Train(X, Y):
     X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
@@ -257,9 +257,9 @@ def learningCurves():
     plt.ylabel("error")
 
 def main():
-    # overFitAndOptimumDegreeAndRegularized()
+    overFitAndOptimumDegreeAndRegularized()
     # electHiperParameter()
-    learningCurves()
+    # learningCurves()
 
     plt.legend()
     plt.show()

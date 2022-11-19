@@ -7,14 +7,6 @@ import nn as neuralNet
 import utils
 import multiClass as mC
 
-def public_Test(X, Y, lambda_):
-    # weights = loadmat('data/ex3weights.mat')
-    # theta1, theta2 = weights['Theta1'], weights['Theta2']
-    # cost = neuralNet.cost(theta1, theta2,X, Y, lambda_)
-    # print("Cost: " + cost)
-
-    utils.checkNNGradients(neuralNet.backprop, lambda_)
-
 def show_samples():
     X , Y = readData("ex3data1.mat")
     
@@ -69,6 +61,7 @@ def backpropAuxForMinimize(thetas, layers, X, Y, lambda_):
     m = Y.shape[1]
     n = X.shape[1]
 
+    #Desenrrollamos para poder utilizar nuestra funcion
     theta1 = np.reshape(thetas[:layers * (n+1)], (layers, n+1))
     theta2 = np.reshape(thetas[layers * (n+1):], (m, layers+1))
 
@@ -83,10 +76,13 @@ def learnParametersSciPy(X, Y, Y_encoded, lambda_, num_iters):
     m = Y_encoded.shape[1]
     n = X.shape[1]
 
+    #Enrrollamos los pesos en un array unidimensional
     thetas = np.concatenate([theta1.ravel(), theta2.ravel()])
 
+    #Pasmos la función a minimizar (BackPropagation) y sus datos
     result = minimize(fun=backpropAuxForMinimize, x0=thetas, args=(layers, X, Y_encoded, lambda_), method='TNC', jac=True, options={'maxiter': num_iters})
 
+    #Desenrrollamos para poder realizar una prediccion sobre los pesos resultado.
     theta1 = np.reshape(result.x[:layers * (n+1)], (layers, n+1))
     theta2 = np.reshape(result.x[layers * (n+1):], (m, layers+1))
 
@@ -101,7 +97,7 @@ def our_test_A():
 
     lambda_ = 1
     alpha = 1
-    # public_Test(X, Y, lambda_)
+    # utils.checkNNGradients(neuralNet.backprop)
     # learningParameters(X, Y, Y_encoded, lambda_, alpha, 1000)
     learnParametersSciPy(X, Y, Y_encoded, lambda_, 100) #con 1000 da una precision de 99.64%
 
