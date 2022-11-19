@@ -73,13 +73,13 @@ def overFit(X, Y):
     print("Test:" + str(test))
 
     #Todos los ejemplos
-    # XData_ = np.sort(np.concatenate((X_trainData, X_testData) ,axis=None)) 
-    # YData = np.sort(np.concatenate((yTrainPredict, yTestPredict) ,axis=None))
+    XData_ = np.sort(np.concatenate((X_trainData, X_testData) ,axis=None)) 
+    YData = np.sort(np.concatenate((yTrainPredict, yTestPredict) ,axis=None))
     
     #ordenamos
     #Datos entrenamiento
-    XData_ = np.sort(X_trainData,axis=None)
-    YData = np.sort(yTrainPredict ,axis=None)
+    # XData_ = np.sort(X_trainData,axis=None)
+    # YData = np.sort(yTrainPredict ,axis=None)
     plt.plot(XData_, YData, c = 'red', label = 'predicted')
 
 def optimumDegree(X, Y):
@@ -113,17 +113,17 @@ def optimumDegree(X, Y):
     
     #deberiamos calcular el error real con los de test, y no con los de validacion ya que ese ya lo sabemos(es el menor).
     #Y hacer la grafica con los datos de entrenamiento. Los de test es solo para comprobar que el de validacion esta bien
-    error, yValidatePredict = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)
+    error, yTestPredict = calcError(X_testData_matrix, Y_testData, poly, scaler, linear_model)
 
-    XData_ = np.sort(X_validateData,axis=None)
-    YData = np.sort(yValidatePredict ,axis=None)
+    XData_ = np.sort(X_testData,axis=None)
+    YData = np.sort(yTestPredict ,axis=None)
     plt.plot(XData_, YData, c = 'blue', label = 'predicted')
 
 def electHiperParameter():
     x_train, y_train, x_ideal, y_ideal = gen_data(750)
     plt.figure()
     plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
-    plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o', s = 2)
+    plt.scatter(x_train, y_train, c = 'green', label = 'train', marker= 'o', s = 1)
 
     searchDegreeAndLambda(x_train, y_train)
 
@@ -195,14 +195,14 @@ def OverfitRegularized(X, Y):
             minErrorValidate = error
             optimumLambda = i
 
-    print(f"Optimum lambda is {RegularizerLambdas[optimumLambda]}")
+    print(f"Optimum lambda is {RegularizerLambdas[optimumLambda]}]")
 
     poly, scaler, linear_model = trainPolinomicRegularized(15, X_trainData_matrix, Y_trainData, RegularizerLambdas[optimumLambda])
         
-    error, yValidatePredict = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)
+    error, yTrainPredict = calcError(X_trainData_matrix, Y_trainData, poly, scaler, linear_model)
 
-    XData_ = np.sort(X_validateData,axis=None)
-    YData = np.sort(yValidatePredict ,axis=None)
+    XData_ = np.sort(X_trainData,axis=None)
+    YData = np.sort(yTrainPredict ,axis=None)
     plt.plot(XData_, YData, c = 'blue', label = 'predicted')
 
 def overFitAndOptimumDegreeAndRegularized():
@@ -211,7 +211,7 @@ def overFitAndOptimumDegreeAndRegularized():
     plt.plot(x_ideal, y_ideal, c = 'red', label = 'y_ideal', linestyle = '--')
     plt.scatter(x_train, y_train, c = 'blue', label = 'train', marker= 'o', s = 10)
 
-    overFit(x_train, y_train)
+    # overFit(x_train, y_train)
     # optimumDegree(x_train, y_train)
     # OverfitRegularized(x_train, y_train)
 
@@ -257,9 +257,9 @@ def learningCurves():
     plt.ylabel("error")
 
 def main():
-    overFitAndOptimumDegreeAndRegularized()
+    # overFitAndOptimumDegreeAndRegularized()
     # electHiperParameter()
-    # learningCurves()
+    learningCurves()
 
     plt.legend()
     plt.show()
