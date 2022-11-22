@@ -102,7 +102,7 @@ def optimumDegree(X, Y):
         poly, scaler, linear_model = trainPolinomic(i, X_trainData_matrix, Y_trainData)
         
         error = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)[0]
-        # print(f"Validate {i} :" + str(error))
+        print(f"Degree: {i} :" + str(error))
         if(error < minErrorValidate):
             minErrorValidate = error
             optimumDegree = i
@@ -141,7 +141,7 @@ def searchDegreeAndLambda(X, Y):
     X_testData_matrix = X_testData[:, None]
     X_validateData_matrix = X_validateData[:, None]
 
-    RegularizerLambdas =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-2, 1, 10, 100, 300, 600, 900]
+    RegularizerLambdas =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1, 10, 100, 300, 600, 900]
     optimumLambda = None
     optimumDegree = None
     minErrorValidate = float('inf')
@@ -183,14 +183,14 @@ def OverfitRegularized(X, Y):
     X_testData_matrix = X_testData[:, None]
     X_validateData_matrix = X_validateData[:, None]
 
-    RegularizerLambdas =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-2, 1, 10, 100, 300, 600, 900]
+    RegularizerLambdas =  [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1, 10, 100, 300, 600, 900]
     optimumLambda = None
     minErrorValidate = float('inf')
     for i in range(len(RegularizerLambdas)):
         poly, scaler, linear_model = trainPolinomicRegularized(15, X_trainData_matrix, Y_trainData, RegularizerLambdas[i])
         
         error = calcError(X_validateData_matrix, Y_validateData, poly, scaler, linear_model)[0]
-        # print(f"Validate {i} :" + str(error))
+        print(f"Lambda {RegularizerLambdas[i]} :" + str(error))
         if(error < minErrorValidate):
             minErrorValidate = error
             optimumLambda = i
@@ -213,7 +213,7 @@ def overFitAndOptimumDegreeAndRegularized():
 
     # overFit(x_train, y_train)
     # optimumDegree(x_train, y_train)
-    # OverfitRegularized(x_train, y_train)
+    OverfitRegularized(x_train, y_train)
 
 def Train(X, Y):
     X_trainData, X_testData, Y_trainData, Y_testData = train_test_split(X, Y, 
@@ -257,9 +257,9 @@ def learningCurves():
     plt.ylabel("error")
 
 def main():
-    # overFitAndOptimumDegreeAndRegularized()
+    overFitAndOptimumDegreeAndRegularized()
     # electHiperParameter()
-    learningCurves()
+    # learningCurves()
 
     plt.legend()
     plt.show()
