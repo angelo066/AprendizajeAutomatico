@@ -20,8 +20,8 @@ def showData():
     # utils.plot_data(X, Y, "y_=1", "y_=0", 'green', 'blue')
     utils.plot_decision_boundary(w, b, X, Y)
     plt.legend()
-    plt.savefig('partB.pdf')
-    # plt.show()
+    # plt.savefig('partB.pdf')
+    plt.show()
 
 def our_test_A():
     #read data
@@ -50,8 +50,8 @@ def our_test_B():
 
     X_stack = utils.map_feature(X[:,0],X[:,1])
     w_init = np.zeros(X_stack.shape[1])
- 
-    w , b, history = lr.gradient_descent(X_stack, Y, w_init, b_init,lr.compute_cost_reg, lr.compute_gradient_reg, alpha , iterations)
+    lambda_ = 0.01 
+    w , b, history = lr.gradient_descent(X_stack, Y, w_init, b_init,lr.compute_cost_reg, lr.compute_gradient_reg, alpha , iterations, lambda_)
 
     return w, b, X_stack, Y
 
@@ -69,8 +69,8 @@ def readData(file):
     return X_train, y_train
 
 def main():
-    # showData()
-    public_Test()
+    showData()
+    # public_Test()
 
 if __name__ == '__main__':
     main()

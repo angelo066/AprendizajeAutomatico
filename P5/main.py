@@ -98,8 +98,8 @@ def our_test_A():
     lambda_ = 1
     alpha = 1
     # utils.checkNNGradients(neuralNet.backprop)
-    # learningParameters(X, Y, Y_encoded, lambda_, alpha, 1000)
-    learnParametersSciPy(X, Y, Y_encoded, lambda_, 100) #con 1000 da una precision de 99.64%
+    learningParameters(X, Y, Y_encoded, lambda_, alpha, 1000)
+    # learnParametersSciPy(X, Y, Y_encoded, lambda_, 100) #con 1000 da una precision de 99.64%
 
 def main():
     # show_samples()

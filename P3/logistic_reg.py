@@ -161,12 +161,12 @@ def gradient_descent(X, y, w_in, b_in, cost_function, gradient_function, alpha, 
     b = b_in
     
     for i in range(num_iters):
-      dj_db, dj_dw = gradient_function(X, y, w, b)
+      dj_db, dj_dw = gradient_function(X, y, w, b, lambda_)
       w -= alpha * dj_dw
       b -= alpha * dj_db
 
       if i < 100000:
-        cost = cost_function(X,y,w,b)
+        cost = cost_function(X,y,w,b, lambda_)
         J_history.append(cost)
 
     return w, b, J_history
